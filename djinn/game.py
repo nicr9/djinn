@@ -15,16 +15,13 @@ class DjinnGame(object):
         self.bg = bg
         self.refresh_rate = refresh_rate
 
-        # Variables
-        self.player_x = 0
-        self.player_y = 0
-
         # Init
         pygame.init()
         self.screen = pygame.display.set_mode(self.window_size)
         pygame.display.set_caption(self.window_caption)
         self.clock = pygame.time.Clock()
 
+    # Background handling
     def draw_bg(self):
         if isinstance(self.bg, list):
             self.screen.fill(self.bg)
@@ -39,28 +36,34 @@ class DjinnGame(object):
         else:
             raise Exception("What's this? : %s" % self.bg)
 
+    # Sprite handling
     def load_sprites(self):
         raise NotImplementedError()
-        self.b = Box(self.screen, Colours.white)
 
     def move_sprites(self):
         raise NotImplementedError()
 
-    def move_player(self):
-        if self.player:
-           self.player.drift()
-
     def draw_sprites(self):
         raise NotImplementedError()
+
+    # Player sprite handling
+    def load_player(self):
+        raise NotImplementedError()
+
+    def move_player(self):
+        if self.player:
+           self.player.calculate()
 
     def draw_player(self):
         if self.player:
             self.player.draw()
 
+    # IO
     def process_mouse(self, event):
         if self.m_debounce:
             self.player.move_raw(*event.pos)
 
+    # Mainloop
     def go(self):
         self.load_sprites()
 
@@ -68,6 +71,7 @@ class DjinnGame(object):
         self.m_debounce = True
         done = False
         while not done:
+            # User input
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     done = True
@@ -84,9 +88,11 @@ class DjinnGame(object):
                 if event.type == pygame.MOUSEBUTTONUP:
                     self.m_debounce = True
 
+            # Calculate positions
             self.move_sprites()
             self.move_player()
 
+            # Draw results
             self.draw_bg()
             self.draw_sprites()
             self.draw_player()
