@@ -20,6 +20,7 @@ class DjinnGame(object):
         self.screen = pygame.display.set_mode(self.window_size)
         pygame.display.set_caption(self.window_caption)
         self.clock = pygame.time.Clock()
+        self.counter = 0
 
     # Background handling
     def draw_bg(self):
@@ -52,7 +53,7 @@ class DjinnGame(object):
 
     def move_player(self):
         if self.player:
-           self.player.calculate()
+            self.player.calculate()
 
     def draw_player(self):
         if self.player:
@@ -106,5 +107,6 @@ class DjinnGame(object):
             pygame.display.flip()
 
             self.clock.tick(self.refresh_rate)
+            self.counter += 1
 
         pygame.quit()
