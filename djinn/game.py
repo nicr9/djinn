@@ -61,8 +61,7 @@ class DjinnGame(object):
 
     # IO
     def process_mouse(self, event):
-        if self.m_debounce:
-            self.player.set_position(*event.pos)
+        pass
 
     def process_keystroke(self, event):
         pass

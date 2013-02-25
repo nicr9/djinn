@@ -36,3 +36,12 @@ class KeepMovingKeyboard(DjinnKeyboard):
 
     def reset_keystroke(self):
         self.player.set_velocity(0, 0)
+
+class DjinnMouse(object):
+    def process_mouse(self, event):
+        raise NotImplementedError
+
+class JumpToMouse(DjinnMouse):
+    def process_mouse(self, event):
+        if self.m_debounce:
+            self.player.set_position(*event.pos)
