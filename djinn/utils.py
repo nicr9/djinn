@@ -1,3 +1,5 @@
+from random import randrange
+
 # Utility functions
 def sub_lists(a, b):
     assert len(a) == len(b)
@@ -22,6 +24,14 @@ class Colours(object):
     red = [255, 0, 0]
     green = [0, 255, 0]
     blue = [0, 0, 255]
+
+    @staticmethod
+    def rand():
+        return [randrange(255), randrange(255), randrange(255)]
+
+    @staticmethod
+    def randgrey():
+        return [randrange(255)] * 3
 
 pi = 3.14159
 X, Y = 0, 1
