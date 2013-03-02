@@ -29,6 +29,13 @@ class DjinnKeyboard(object):
                         counter = [-1 * z for z in handle]
                         self.player.accelerate(*counter)
 
+class BasicKeyboard(DjinnKeyboard):
+    def register_keys(self):
+        self._key_handlers = {pygame.K_UP: (0, -1),
+        pygame.K_DOWN: (0, 1),
+        pygame.K_LEFT: (-1, 0),
+        pygame.K_RIGHT: (1, 0)}
+
 class DjinnMouse(object):
     def process_mouse(self, event):
         raise NotImplementedError
