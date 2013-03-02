@@ -60,19 +60,21 @@ class DjinnGame(object):
             self.player.draw()
 
     # IO
+    def register_keys(self):
+        pass
+
+    def _update_keys(self):
+        pass
+
     def process_mouse(self, event):
-        pass
-
-    def process_keystroke(self, event):
-        pass
-
-    def reset_keystroke(self):
         pass
 
     # Mainloop
     def go(self):
         self.load_sprites()
         self.load_player()
+
+        self.register_keys()
 
         self.debounce = True
         self.m_debounce = True
@@ -83,12 +85,8 @@ class DjinnGame(object):
                 if event.type == pygame.QUIT:
                     done = True
                     break
-                if event.type == pygame.KEYDOWN:
-                    self.process_keystroke(event)
-                    self.debounce = False
-                if event.type == pygame.KEYUP:
-                    self.reset_keystroke()
-                    self.debounce = True
+                if event.type in [pygame.KEYUP, pygame.KEYDOWN]:
+                    self._update_keys()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     self.process_mouse(event)
                     self.m_debounce = False

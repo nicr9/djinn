@@ -1,45 +1,33 @@
 import pygame
 
 class DjinnKeyboard(object):
-    def process_keystroke(self):
-        raise NotImplementedError
+    _key_handlers = {}
+    _key_states = [] # TODO: refactor: _active_keys
 
-    def reset_keystroke(self):
-        raise NotImplementedError
+    def register_keys(self):
+        raise NotImplementedError()
 
-class SingleStepKeyboard(DjinnKeyboard):
-    def process_keystroke(self, event):
-        if self.debounce:
-            if event.key == pygame.K_UP:
-                self.player.move(0, -1)
-            if event.key == pygame.K_DOWN:
-                self.player.move(0, 1)
-            if event.key == pygame.K_LEFT:
-                self.player.move(-1, 0)
-            if event.key == pygame.K_RIGHT:
-                self.player.move(1, 0)
+    # TODO: add a register method
 
-    def reset_keystroke(self):
-        pass
+    def _update_keys(self):
+        keys = pygame.key.get_pressed()
 
-class KeepMovingKeyboard(DjinnKeyboard):
-    def process_keystroke(self, event):
-        if self.debounce:
-            if event.key == pygame.K_UP:
-                self.player.direction = [0, -1]
-                self.player.set_velocity(0, -1)
-            if event.key == pygame.K_DOWN:
-                self.player.direction = [0, 1]
-                self.player.set_velocity(0, 1)
-            if event.key == pygame.K_LEFT:
-                self.player.direction = [-1, 0]
-                self.player.set_velocity(-1, 0)
-            if event.key == pygame.K_RIGHT:
-                self.player.direction = [1, 0]
-                self.player.set_velocity(1, 0)
-
-    def reset_keystroke(self):
-        self.player.set_velocity(0, 0)
+        for key, state in enumerate(keys):
+            if state and key not in self._key_states:
+                # Handle key
+                self._key_states.append(key)
+                if key in self._key_handlers:
+                    handle = self._key_handlers[key]
+                    if isinstance(handle, tuple) and len(handle) == 2:
+                        self.player.accelerate(*handle)
+            elif not state and key in self._key_states:
+                # Undo key
+                self._key_states.remove(key)
+                if key in self._key_handlers:
+                    handle = self._key_handlers[key]
+                    if isinstance(handle, tuple) and len(handle) == 2:
+                        counter = [-1 * z for z in handle]
+                        self.player.accelerate(*counter)
 
 class DjinnMouse(object):
     def process_mouse(self, event):
