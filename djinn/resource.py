@@ -1,4 +1,5 @@
 import os, re, json, pygame
+from utils import Colours
 
 class Resources(object):
     res_re = re.compile('(.*)\.dj$')
@@ -22,7 +23,9 @@ class Resources(object):
                     if direction_file:
                         facing = direction_file.group(1)
                         full_path = os.path.join(root, f)
-                        self._res[res_name][int(facing)] = pygame.image.load(full_path).convert()
+                        temp = pygame.image.load(full_path).convert()
+                        temp.set_colorkey(Colours.black)
+                        self._res[res_name][int(facing)] = temp
             else:
                 continue
 
