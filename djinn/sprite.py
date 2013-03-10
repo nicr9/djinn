@@ -1,30 +1,29 @@
 from utils import mul_lists, add_lists, sub_lists
-import pygame
 from os.path import isfile
+import pygame
 
 class DjinnSprite(pygame.sprite.Sprite):
-    def __init__(self, screen, res, coords, size=[16, 16]):
+    def __init__(self, res, res_name, coords, size=[16, 16]):
         super(DjinnSprite, self).__init__()
-        self.screen = screen
+
+        self.screen = res.screen
+        self.res = res
+        self.res_name = res_name
+
         self.size = size
         self.velocity = [0, 0]
         self.speed = [1, 1]
         self.grid_size = [1, 1]
         self.delta = [0, 0]
-        self.direction = [0, 1]
+        self.direction = 1
+        self.remain = 0
 
-        if isinstance(res, str) and isfile(res):
-            self.image = pygame.image.load(res).convert()
-        elif isinstance(res, list):
-            self.image = pygame.Surface(tuple(size))
-            self.image.fill(res)
-        elif isinstance(res, pygame.Surface):
-            self.image = res
-        else:
-            raise Exception('Faulty res')
-
-        self.rect = self.image.get_rect()
+        self.rect = res[res_name][self.direction].get_rect()
         self.rect[:2] = coords
+
+    def blit(self, res_file):
+        image = self.res[self.res_file][self.direction]
+        self.screen.blit(image, self.rect)
 
     # Movement
     def accelerate(self, x, y):
@@ -57,6 +56,12 @@ class DjinnSprite(pygame.sprite.Sprite):
 
     def _apply_position(self):
         self.rect[:2] = add_lists(self.rect[:2], self.delta)
+
+        if self.delta[0] < 0:
+            self.direction = 1 # left
+        elif self.delta[0] > 0:
+            self.direction = 3 # right
+
         self.delta = [0, 0]
 
     def grid(self):
@@ -73,6 +78,9 @@ class DjinnSprite(pygame.sprite.Sprite):
     # Draw on screen
     def draw(self):
         raise NotImplementedError()
+
+    def _draw_direction(self):
+        self.screen.blit(self.res[self.res_name][self.direction], self.rect)
 
 class DjinnGroup(pygame.sprite.Group):
     pass

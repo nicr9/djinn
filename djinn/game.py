@@ -1,4 +1,5 @@
 from os.path import isfile
+from resource import Resources
 import pygame
 
 class DjinnGame(object):
@@ -8,19 +9,21 @@ class DjinnGame(object):
             window_size,
             window_caption,
             bg,
-            refresh_rate):
+            refresh_rate,
+            res):
         # Attributes
         self.window_size = window_size
         self.window_caption = window_caption
         self.bg = bg
         self.refresh_rate = refresh_rate
+        self.counter = 0
 
         # Init
         pygame.init()
         self.screen = pygame.display.set_mode(self.window_size)
         pygame.display.set_caption(self.window_caption)
         self.clock = pygame.time.Clock()
-        self.counter = 0
+        self.res = Resources(self.screen, res)
 
     # Background handling
     def draw_bg(self):
