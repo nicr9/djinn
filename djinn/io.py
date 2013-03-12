@@ -3,18 +3,22 @@ from inspect import ismethod
 
 class DjinnKeyboard(object):
     _key_handlers = {}
+    _key_sprite_map = {}
     _active_keys = []
 
     def register_keys(self):
         raise NotImplementedError()
 
-    def _register(self, key, f):
+    def _register(self, key, f, sprite=None):
         if isinstance(f, tuple) and len(f) == 2:
             self._key_handlers[key] = f
         elif ismethod(f):
             self._key_handlers[key] = f
         else:
             raise AttributeError()
+
+        if sprite is not None:
+            self._key_sprite_map[key] = sprite
 
     def _update_keys(self):
         keys = pygame.key.get_pressed()
@@ -27,13 +31,22 @@ class DjinnKeyboard(object):
                 if key in self._key_handlers:
                     handle = self._key_handlers[key]
 
-                    # Move player
+                    sprite = None
+                    if key in self._key_sprite_map:
+                        sprite = self._key_sprite_map[key]
+
+                    # Move sprite
                     if isinstance(handle, tuple) and len(handle) == 2:
-                        self.player.accelerate(*handle)
+                        if sprite:
+                            sprite.accelerate(*handle)
+                        else:
+                            raise Exception(
+                                    'Moving the bg is not currently supported'
+                                    )
 
                     # Call handler
                     elif ismethod(handle):
-                        handle(True)
+                        handle(True, sprite)
                     else:
                         raise Exception()
 
@@ -44,23 +57,30 @@ class DjinnKeyboard(object):
                 if key in self._key_handlers:
                     handle = self._key_handlers[key]
 
+                    sprite = None
+                    if key in self._key_sprite_map:
+                        sprite = self._key_sprite_map[key]
+
                     # Stop player
                     if isinstance(handle, tuple) and len(handle) == 2:
-                        counter = [-1 * z for z in handle]
-                        self.player.accelerate(*counter)
+                        if sprite:
+                            counter = [-1 * z for z in handle]
+                            self.player.accelerate(*counter)
+                        else:
+                            pass
 
                     # Call handler
                     elif ismethod(handle):
-                        handle(False)
+                        handle(False, sprite)
                     else:
                         raise Exception()
 
 class BasicKeyboard(DjinnKeyboard):
-    def register_keys(self):
-        self._register(pygame.K_UP, (0, -1))
-        self._register(pygame.K_DOWN, (0, 1))
-        self._register(pygame.K_LEFT, (-1, 0))
-        self._register(pygame.K_RIGHT, (1, 0))
+    def register_keys(self, sprite):
+        self._register(pygame.K_UP, (0, -1), sprite)
+        self._register(pygame.K_DOWN, (0, 1), sprite)
+        self._register(pygame.K_LEFT, (-1, 0), sprite)
+        self._register(pygame.K_RIGHT, (1, 0), sprite)
 
 class DjinnMouse(object):
     def process_mouse(self, event):
