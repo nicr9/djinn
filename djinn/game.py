@@ -1,9 +1,11 @@
 from os.path import isfile
 from resource import Resources
+from sprite import DjinnGroup
 import pygame
 
 class DjinnGame(object):
     player = None
+    _groups = {}
 
     def __init__(self,
             window_size,
@@ -24,6 +26,7 @@ class DjinnGame(object):
         pygame.display.set_caption(self.window_caption)
         self.clock = pygame.time.Clock()
         self.res = Resources(self.screen, res)
+        self.register_group('_all_sprites')
 
     # Background handling
     def draw_bg(self):
@@ -49,6 +52,23 @@ class DjinnGame(object):
 
     def draw_sprites(self):
         raise NotImplementedError()
+
+    def register_group(self, group_name):
+        if group_name not in self._groups:
+            self._groups[group_name] = DjinnGroup()
+
+    def assign_sprite(self, sprite, group_name=None, sprite_name=None):
+        if group_name is not None:
+            if sprite_name is None:
+                self._groups[group_name].add(sprite)
+            else:
+                self._groups[group_name].add_named(sprite, sprite_name)
+
+        if sprite not in self._groups['_all_sprites']:
+            self._groups['_all_sprites'].add(sprite)
+
+    def get_sprite(self, group_name, sprite_name):
+        return self._groups[group_name].get_named(sprite_name)
 
     # Player sprite handling
     def load_player(self):

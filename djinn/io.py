@@ -65,7 +65,7 @@ class DjinnKeyboard(object):
                     if isinstance(handle, tuple) and len(handle) == 2:
                         if sprite:
                             counter = [-1 * z for z in handle]
-                            self.player.accelerate(*counter)
+                            sprite.accelerate(*counter)
                         else:
                             pass
 

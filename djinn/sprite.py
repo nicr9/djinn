@@ -83,4 +83,22 @@ class DjinnSprite(pygame.sprite.Sprite):
         self.screen.blit(self.res[self.res_name][self.direction], self.rect)
 
 class DjinnGroup(pygame.sprite.Group):
-    pass
+    _named = {}
+
+    def calculate(self):
+        for sprite in self.sprites():
+            sprite.calculate()
+
+    def draw(self):
+        for sprite in self.sprites():
+            finished = sprite.draw()
+            if finished:
+                self.remove(sprite)
+
+    def add_named(self, sprite, sprite_name):
+        self._named[sprite_name] = sprite
+        self.add(sprite)
+
+    def get_named(self, sprite_name):
+        if sprite_name in self._named:
+            return self._named[sprite_name]
