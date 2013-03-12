@@ -48,10 +48,10 @@ class DjinnGame(object):
         raise NotImplementedError()
 
     def move_sprites(self):
-        raise NotImplementedError()
+        self._groups['_all_sprites'].calculate()
 
     def draw_sprites(self):
-        raise NotImplementedError()
+        self._groups['_all_sprites'].draw()
 
     def register_group(self, group_name):
         if group_name not in self._groups:
@@ -70,18 +70,6 @@ class DjinnGame(object):
     def get_sprite(self, group_name, sprite_name):
         return self._groups[group_name].get_named(sprite_name)
 
-    # Player sprite handling
-    def load_player(self):
-        raise NotImplementedError()
-
-    def move_player(self):
-        if self.player:
-            self.player.calculate()
-
-    def draw_player(self):
-        if self.player:
-            self.player.draw()
-
     # IO
     def register_keys(self):
         pass
@@ -95,7 +83,6 @@ class DjinnGame(object):
     # Mainloop
     def go(self):
         self.load_sprites()
-        self.load_player()
 
         self.register_keys()
 
@@ -118,12 +105,10 @@ class DjinnGame(object):
 
             # Calculate positions
             self.move_sprites()
-            self.move_player()
 
             # Draw results
             self.draw_bg()
             self.draw_sprites()
-            self.draw_player()
             pygame.display.flip()
 
             self.clock.tick(self.refresh_rate)
