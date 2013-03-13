@@ -51,7 +51,9 @@ class DjinnGame(object):
         self._groups['_all_sprites'].calculate()
 
     def draw_sprites(self):
-        self._groups['_all_sprites'].draw()
+        to_flush = self._groups['_all_sprites'].draw()
+        for group in self._groups.itervalues():
+            group.flush(to_flush)
 
     def register_group(self, group_name):
         if group_name not in self._groups:

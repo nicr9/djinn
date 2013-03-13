@@ -90,10 +90,12 @@ class DjinnGroup(pygame.sprite.Group):
             sprite.calculate()
 
     def draw(self):
+        to_flush = []
         for sprite in self.sprites():
             finished = sprite.draw()
             if finished:
-                self.remove(sprite)
+                to_flush.append(sprite)
+        return to_flush
 
     def add_named(self, sprite, sprite_name):
         self._named[sprite_name] = sprite
@@ -102,3 +104,8 @@ class DjinnGroup(pygame.sprite.Group):
     def get_named(self, sprite_name):
         if sprite_name in self._named:
             return self._named[sprite_name]
+
+    def flush(self, to_flush):
+        for sprite in to_flush:
+            if self.has(sprite):
+                self.remove(sprite)
