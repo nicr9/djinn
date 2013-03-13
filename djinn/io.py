@@ -76,7 +76,7 @@ class DjinnKeyboard(object):
                         raise Exception()
 
 class BasicKeyboard(DjinnKeyboard):
-    def register_keys(self, sprite):
+    def register_keys(self, sprite=None):
         self._register(pygame.K_UP, (0, -1), sprite)
         self._register(pygame.K_DOWN, (0, 1), sprite)
         self._register(pygame.K_LEFT, (-1, 0), sprite)
