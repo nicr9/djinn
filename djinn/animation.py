@@ -1,8 +1,7 @@
 class DjinnAnimation(object):
-    _actions = {}
-    _current_action = None
-
     def __init__(self, action=None, frames=None):
+        self._actions = {}
+        self._current_action = None
         pointer = 0
 
         if action is not None and frames is not None:
