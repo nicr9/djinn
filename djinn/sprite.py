@@ -97,6 +97,13 @@ class DjinnGroup(pygame.sprite.Group):
                 to_flush.append(sprite)
         return to_flush
 
+    def collidepoint(self, x, y):
+        results = []
+        for sprite in self.sprites():
+            if sprite.rect.collidepoint(x, y):
+                results.append(sprite)
+        return results
+
     def add_named(self, sprite, sprite_name):
         self._named[sprite_name] = sprite
         self.add(sprite)
