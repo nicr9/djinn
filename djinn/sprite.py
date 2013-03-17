@@ -100,6 +100,7 @@ class DjinnSprite(pygame.sprite.Sprite):
                     )
         else:
             raise Exception('%s has no animation set' % self.__class__)
+        return self._animation.beginning()
 
     def _draw_direction(self):
         self.screen.blit(self.res[self.res_name][self.direction], self.rect)

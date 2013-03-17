@@ -1,5 +1,5 @@
 import pygame
-from inspect import ismethod
+from inspect import isfunction
 
 class DjinnKeyboard(object):
     _key_handlers = {}
@@ -12,7 +12,7 @@ class DjinnKeyboard(object):
     def _register(self, key, f, sprite=None):
         if isinstance(f, tuple) and len(f) == 2:
             self._key_handlers[key] = f
-        elif ismethod(f):
+        elif isfunction(f):
             self._key_handlers[key] = f
         else:
             raise AttributeError()
@@ -45,7 +45,7 @@ class DjinnKeyboard(object):
                                     )
 
                     # Call handler
-                    elif ismethod(handle):
+                    elif isfunction(handle):
                         handle(True, sprite)
                     else:
                         raise Exception()
@@ -70,7 +70,7 @@ class DjinnKeyboard(object):
                             pass
 
                     # Call handler
-                    elif ismethod(handle):
+                    elif isfunction(handle):
                         handle(False, sprite)
                     else:
                         raise Exception()

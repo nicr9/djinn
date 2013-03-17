@@ -21,6 +21,12 @@ class DjinnAnimation(object):
     def next(self):
         self.pointer = (self.pointer + 1) % self._action_len
 
+    def beginning(self):
+        if self.pointer == 0:
+            return True
+        else:
+            return False
+
     def get_current(self):
         return self._actions[self._current_action][self.pointer]
 
