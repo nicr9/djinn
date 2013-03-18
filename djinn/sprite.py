@@ -17,14 +17,10 @@ class DjinnSprite(pygame.sprite.Sprite):
         self.delta = [0, 0]
         self.direction = 1
         self.remain = 0
-        self._animation = None
+        self.animation = None
 
         self.rect = res[res_name][self.direction].get_rect()
         self.rect[:2] = coords
-
-    def blit(self, res_file):
-        image = self.res[self.res_file][self.direction]
-        self.screen.blit(image, self.rect)
 
     # Movement
     def accelerate(self, x, y):
@@ -80,30 +76,29 @@ class DjinnSprite(pygame.sprite.Sprite):
     def draw(self):
         raise NotImplementedError()
 
-    def set_animation(self, animation):
-        self._animation = animation
+    def set_animation(self, animation_name):
+        self.animation = animation_name
 
-    def _draw_current(self):
-        if self._animation:
-            self.screen.blit(
-                    self.res[self.res_name][self._animation.get_current()],
-                    self.rect
-                    )
-        else:
-            raise Exception('%s has no animation set' % self.__class__)
+class BitmapSprite(DjinnSprite):
+    def _blit(self, res_indx):
+        image = self.res[self.res_file][res_indx]
+        self.screen.blit(image, self.rect)
 
-    def _draw_next(self):
-        if self._animation:
-            self.screen.blit(
-                    self.res[self.res_name][self._animation.get_next()],
-                    self.rect
-                    )
+    def _draw_w_animate(self):
+        if self.animation:
+            if self.animation.is_active()
+                self._blit(self.animation.get_next())
+            else:
+                self._blit(self.animation.get_current())
         else:
-            raise Exception('%s has no animation set' % self.__class__)
-        return self._animation.beginning()
+            self._blit(0)
+        return self.animation.beginning()
 
     def _draw_direction(self):
-        self.screen.blit(self.res[self.res_name][self.direction], self.rect)
+        self._blit(self.direction)
+
+class DrawableSprite(DjinnSprite):
+    pass
 
 class DjinnGroup(pygame.sprite.Group):
     _named = {}
