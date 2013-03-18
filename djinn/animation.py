@@ -2,7 +2,8 @@ class DjinnAnimation(object):
     def __init__(self, action=None, frames=None):
         self._actions = {}
         self._current_action = None
-        pointer = 0
+        self.pointer = 0
+        self._active = False
 
         if action is not None and frames is not None:
             self.add_action(action, frames)
@@ -17,6 +18,12 @@ class DjinnAnimation(object):
         self._current_action = action
         self.pointer = 0
         self._action_len = len(self._actions[action])
+
+    def is_active(self):
+        return self._active
+
+    def set_active(self, state):
+        self._active = state
 
     def next(self):
         self.pointer = (self.pointer + 1) % self._action_len

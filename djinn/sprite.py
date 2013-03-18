@@ -76,17 +76,20 @@ class DjinnSprite(pygame.sprite.Sprite):
     def draw(self):
         raise NotImplementedError()
 
-    def set_animation(self, animation_name):
+    def set_animation(self, animation_name, state=None):
         self.animation = animation_name
+
+        if state is not None:
+            self.animation.set_active(state)
 
 class BitmapSprite(DjinnSprite):
     def _blit(self, res_indx):
-        image = self.res[self.res_file][res_indx]
+        image = self.res[self.res_name][res_indx]
         self.screen.blit(image, self.rect)
 
     def _draw_w_animate(self):
         if self.animation:
-            if self.animation.is_active()
+            if self.animation.is_active():
                 self._blit(self.animation.get_next())
             else:
                 self._blit(self.animation.get_current())
