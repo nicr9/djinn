@@ -73,18 +73,24 @@ class DjinnSprite(pygame.sprite.Sprite):
         self._apply_velocity()
         self._apply_position()
 
-    def for_flush(self):
+    def exited(self):
         x, y, w, h = self.rect
         sw, sh = self.screen.get_size()
-        exited = (w < x < -w) or (h < y < -h)
+        return (sw < x) or (x <= -w) or (sh < y) or (y <= -h)
 
+    def at_bounds(self):
+        x, y, w, h = self.rect
+        sw, sh = self.screen.get_size()
+        return ((sw - w) <= x) or (x <= 0) or ((sh - h) <= y) or (y <= 0)
+
+    def for_flush(self):
         timed_out = False
         if self.flush_timer == 0:
             timed_out = True
         if self.flush_timer >= 0:
             self.flush_timer -= 1
 
-        return exited or timed_out
+        return self.exited() or timed_out
 
     # Draw on screen
     def draw(self):

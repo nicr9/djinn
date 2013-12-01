@@ -4,16 +4,6 @@ class DjinnConfine(object):
     def calculate(self, f):
         raise NotImplementedError
 
-    def exited(self):
-        area = self.screen.get_size()
-
-        for z in [X, Y]:
-            if self.rect[z] > area[z]:
-                return True
-            if self.rect[z] < 0:
-                return True
-        return False
-
     def exited_via(self):
         area = self.screen.get_size()
 
@@ -51,7 +41,7 @@ class BrickWallConfine(DjinnConfine):
 
         self._calculate()
 
-        if self.exited():
+        if self.at_bounds():
             # Block from exiting by keeping coords the same
             self.rect[:2] = last_coords
 
