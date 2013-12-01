@@ -70,7 +70,7 @@ class DjinnKeyboard(object):
                             pass
 
                     # Call handler
-                    elif isfunction(handle):
+                    elif hasattr(handle, '__call__'):
                         handle(False, sprite)
                     else:
                         raise Exception()
