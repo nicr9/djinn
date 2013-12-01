@@ -59,7 +59,7 @@ class DjinnGame(object):
             self._groups[group_name] = DjinnGroup(flush)
 
     def flush_sprites(self, sprites):
-        for group in self._groups.values():
+        for group in self._groups.itervalues():
             group.flush(sprites)
 
     def assign_sprite(self, sprite, group_name=None, sprite_name=None):
