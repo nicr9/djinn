@@ -48,23 +48,27 @@ class DjinnGame(object):
         raise NotImplementedError()
 
     def move_sprites(self):
-        self._groups['_all_sprites'].calculate()
+        to_flush = self._groups['_all_sprites'].calculate()
+        self.flush_sprites(to_flush)
 
     def draw_sprites(self):
-        to_flush = self._groups['_all_sprites'].draw()
-        for group in self._groups.itervalues():
-            group.flush(to_flush)
+        self._groups['_all_sprites'].draw()
 
-    def register_group(self, group_name):
+    def register_group(self, group_name, flush=False):
         if group_name not in self._groups:
-            self._groups[group_name] = DjinnGroup()
+            self._groups[group_name] = DjinnGroup(flush)
+
+    def flush_sprites(self, sprites):
+        for group in self._groups.values():
+            group.flush(sprites)
 
     def assign_sprite(self, sprite, group_name=None, sprite_name=None):
         if group_name is not None:
+            groups = self._groups.setdefault(group_name, DjinnGroup())
             if sprite_name is None:
-                self._groups[group_name].add(sprite)
+                groups.add(sprite)
             else:
-                self._groups[group_name].add_named(sprite, sprite_name)
+                groups.add_named(sprite, sprite_name)
 
         if sprite not in self._groups['_all_sprites']:
             self._groups['_all_sprites'].add(sprite)

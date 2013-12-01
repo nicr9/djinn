@@ -72,6 +72,12 @@ class DjinnSprite(pygame.sprite.Sprite):
         self._apply_velocity()
         self._apply_position()
 
+    def exited(self):
+        x, y, w, h = self.rect
+        sw, sh = self.screen.get_size()
+
+        return (w < x < -w) or (h < y < -h)
+
     # Draw on screen
     def draw(self):
         raise NotImplementedError()
@@ -106,17 +112,21 @@ class DrawableSprite(DjinnSprite):
 class DjinnGroup(pygame.sprite.Group):
     _named = {}
 
+    def __init__(self, flush=False):
+        super(DjinnGroup, self).__init__()
+        self._flush = flush
+
     def calculate(self):
+        left_screen = []
         for sprite in self.sprites():
             sprite.calculate()
+            if sprite.exited():
+                left_screen.append(sprite)
+        return left_screen
 
     def draw(self):
-        to_flush = []
         for sprite in self.sprites():
             finished = sprite.draw()
-            if finished:
-                to_flush.append(sprite)
-        return to_flush
 
     def collidepoint(self, x, y):
         results = []
@@ -134,6 +144,7 @@ class DjinnGroup(pygame.sprite.Group):
             return self._named[sprite_name]
 
     def flush(self, to_flush):
-        for sprite in to_flush:
-            if self.has(sprite):
-                self.remove(sprite)
+        if self._flush:
+            for sprite in to_flush:
+                if self.has(sprite):
+                    self.remove(sprite)

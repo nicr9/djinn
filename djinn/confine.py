@@ -71,5 +71,5 @@ class BounceConfine(DjinnConfine):
 
 class AlertConfine(DjinnConfine):
     def calculate(self):
-        self.calculate()
+        self._calculate()
         return self.exited()
