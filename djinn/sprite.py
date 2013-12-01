@@ -107,7 +107,34 @@ class BitmapSprite(DjinnSprite):
         self._blit(self.direction)
 
 class DrawableSprite(DjinnSprite):
-    pass
+    def _draw_instruction(self, instruction):
+        tool = instruction[0]
+        args = instruction[1:]
+
+        if tool == 'ellipse':
+            self._draw_ellipse(*args)
+        elif tool == 'text':
+            self._draw_text(*args)
+        #if tool == 'rect':
+        #    self._draw_rect(*args)
+        #if tool == 'line':
+        #    self._draw_line(*args)
+        else:
+            raise Exception('Bad instruction: %s' (instruction, ))
+
+    def _draw_ellipse(self, colour, rect_offset, border):
+        rect = add_lists(self.rect[:2], rect_offset[:2]) + rect_offset[2:]
+
+        pygame.draw.ellipse(
+                self.screen,
+                colour,
+                rect,
+                border
+                )
+
+    def _draw_text(self, text, colour, coords):
+        label = pygame.font.SysFont("monospace", 15).render(text, 1, colour)
+        self.screen.blit(label, coords)
 
 class DjinnGroup(pygame.sprite.Group):
     _named = {}
