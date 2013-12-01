@@ -86,6 +86,10 @@ class DjinnGame(object):
     def process_mouse(self, event):
         pass
 
+    # Hooks
+    def pre_draw(self):
+        pass
+
     # Mainloop
     def go(self):
         self.load_sprites()
@@ -111,6 +115,9 @@ class DjinnGame(object):
 
             # Calculate positions
             self.move_sprites()
+
+            # pre_draw events
+            self.pre_draw()
 
             # Draw results
             self.draw_bg()
