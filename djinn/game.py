@@ -26,7 +26,7 @@ class DjinnGame(object):
         pygame.display.set_caption(self.window_caption)
         self.clock = pygame.time.Clock()
         self.res = Resources(self.screen, res)
-        self.register_group('_all_sprites')
+        self.register_group('_all_sprites', True)
 
     # Background handling
     def draw_bg(self):

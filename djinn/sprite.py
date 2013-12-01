@@ -18,6 +18,7 @@ class DjinnSprite(pygame.sprite.Sprite):
         self.direction = 1
         self.remain = 0
         self.animation = None
+        self.flush_timer = -1
 
         self.rect = res[res_name][self.direction].get_rect()
         self.rect[:2] = coords
@@ -72,11 +73,18 @@ class DjinnSprite(pygame.sprite.Sprite):
         self._apply_velocity()
         self._apply_position()
 
-    def exited(self):
+    def for_flush(self):
         x, y, w, h = self.rect
         sw, sh = self.screen.get_size()
+        exited = (w < x < -w) or (h < y < -h)
 
-        return (w < x < -w) or (h < y < -h)
+        timed_out = False
+        if self.flush_timer == 0:
+            timed_out = True
+        if self.flush_timer >= 0:
+            self.flush_timer -= 1
+
+        return exited or timed_out
 
     # Draw on screen
     def draw(self):
@@ -87,6 +95,9 @@ class DjinnSprite(pygame.sprite.Sprite):
 
         if state is not None:
             self.animation.set_active(state)
+
+    def flush_in(self, secs):
+        self.flush_timer = secs
 
 class BitmapSprite(DjinnSprite):
     def _blit(self, res_indx):
@@ -144,12 +155,12 @@ class DjinnGroup(pygame.sprite.Group):
         self._flush = flush
 
     def calculate(self):
-        left_screen = []
+        to_flush = []
         for sprite in self.sprites():
             sprite.calculate()
-            if sprite.exited():
-                left_screen.append(sprite)
-        return left_screen
+            if sprite.for_flush():
+                to_flush.append(sprite)
+        return to_flush
 
     def draw(self):
         for sprite in self.sprites():
