@@ -12,7 +12,7 @@ class DjinnKeyboard(object):
     def _register(self, key, f, sprite=None):
         if isinstance(f, tuple) and len(f) == 2:
             self._key_handlers[key] = f
-        elif isfunction(f):
+        elif hasattr(f, '__call__'):
             self._key_handlers[key] = f
         else:
             raise AttributeError()
@@ -45,7 +45,7 @@ class DjinnKeyboard(object):
                                     )
 
                     # Call handler
-                    elif isfunction(handle):
+                    elif hasattr(handle, '__call__'):
                         handle(True, sprite)
                     else:
                         raise Exception()
