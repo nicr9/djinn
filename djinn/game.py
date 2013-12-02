@@ -26,7 +26,7 @@ class DjinnGame(object):
         pygame.display.set_caption(self.window_caption)
         self.clock = pygame.time.Clock()
         self.res = Resources(self.screen, res)
-        self.register_group('_all_sprites', True)
+        self.register_group('_active')
 
     # Background handling
     def draw_bg(self):
@@ -48,19 +48,22 @@ class DjinnGame(object):
         raise NotImplementedError()
 
     def move_sprites(self):
-        to_flush = self._groups['_all_sprites'].calculate()
+        to_flush = self._groups['_active'].calculate()
         self.flush_sprites(to_flush)
 
     def draw_sprites(self):
-        self._groups['_all_sprites'].draw()
+        self._groups['_active'].draw()
 
-    def register_group(self, group_name, flush=False):
+    def register_group(self, group_name):
         if group_name not in self._groups:
-            self._groups[group_name] = DjinnGroup(flush)
+            self._groups[group_name] = DjinnGroup()
 
-    def flush_sprites(self, sprites):
-        for group in self._groups.itervalues():
-            group.flush(sprites)
+    def flush_sprites(self, sprites, group_name='_active'):
+        self._groups[group_name].flush(sprites)
+
+    def show_sprite(self, sprite):
+        if sprite not in self._groups['_active']:
+            self._groups['_active'].add(sprite)
 
     def assign_sprite(self, sprite, group_name=None, sprite_name=None):
         if group_name is not None:
@@ -69,9 +72,6 @@ class DjinnGame(object):
                 groups.add(sprite)
             else:
                 groups.add_named(sprite, sprite_name)
-
-        if sprite not in self._groups['_all_sprites']:
-            self._groups['_all_sprites'].add(sprite)
 
     def get_sprite(self, group_name, sprite_name):
         return self._groups[group_name].get_named(sprite_name)

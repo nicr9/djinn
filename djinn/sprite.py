@@ -156,9 +156,8 @@ class DrawableSprite(DjinnSprite):
 class DjinnGroup(pygame.sprite.Group):
     _named = {}
 
-    def __init__(self, flush=False):
+    def __init__(self):
         super(DjinnGroup, self).__init__()
-        self._flush = flush
 
     def calculate(self):
         to_flush = []
@@ -188,7 +187,6 @@ class DjinnGroup(pygame.sprite.Group):
             return self._named[sprite_name]
 
     def flush(self, to_flush):
-        if self._flush:
-            for sprite in to_flush:
-                if self.has(sprite):
-                    self.remove(sprite)
+        for sprite in to_flush:
+            if self.has(sprite):
+                self.remove(sprite)
