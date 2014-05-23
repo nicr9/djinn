@@ -1,0 +1,31 @@
+#! /usr/bin/python2.7
+
+from lament.config import ConfigFile
+import sys
+
+PROMPT = '>>> '
+EXIT_CMDS = ['quit', 'exit', '\q']
+DRAWABLE_CMD = 'drawable'
+BITMAP_CMD = 'bitmap'
+USAGE = """Usage:\n\t$ %s <FILENAME>""" % __file__
+
+if len(sys.argv) < 2:
+    print USAGE
+    sys.exit()
+
+with ConfigFile(sys.argv[1], create=True) as config:
+    while True:
+        raw = raw_input(PROMPT)
+        tokens = raw.split()
+        if tokens[0] in EXIT_CMDS:
+            break
+        elif tokens[0] == DRAWABLE_CMD:
+            res_label = ' '.join(tokens[:2])
+            res_attrs = tokens[2:]
+            config.update({res_label: res_attrs})
+        elif tokens[0] == BITMAP_CMD:
+            res_label = ' '.join(tokens[:2])
+            res_attrs = tokens[2:]
+            config.update({res_label: res_attrs})
+        else:
+            print "Couldn't parse instruction %s." % tokens[0]
