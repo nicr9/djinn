@@ -1,4 +1,4 @@
-from djinn.sprite import BitmapSprite, DjinnGroup
+from djinn.sprite import DjinnSprite, DjinnGroup
 from djinn.game import DjinnGame
 from djinn.utils import Colours
 from djinn.io import DjinnKeyboard
