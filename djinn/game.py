@@ -1,32 +1,35 @@
 from os.path import isfile
-from resource import Resources
-from sprite import DjinnGroup
+from djinn.resource import Resources
+from djinn.sprite import DjinnGroup
+from djinn.utils import get_colour
+from collections import defaultdict
 import pygame
 
 class DjinnGame(object):
-    player = None
-    _groups = {}
 
     def __init__(self,
             window_size,
             window_caption,
             bg,
             refresh_rate,
-            res):
+            res_path):
         # Attributes
         self.window_size = window_size
         self.window_caption = window_caption
-        self.bg = bg
+        self.bg = get_colour(bg)
         self.refresh_rate = refresh_rate
         self.counter = 0
+
+        # Setup sprite stuff
+        self.player = None
+        self._groups = defaultdict(DjinnGroup)
 
         # Init
         pygame.init()
         self.screen = pygame.display.set_mode(self.window_size)
         pygame.display.set_caption(self.window_caption)
         self.clock = pygame.time.Clock()
-        self.res = Resources(self.screen, res)
-        self.register_group('_active')
+        self.res_store = Resources(self.screen, res_path)
 
     # Background handling
     def draw_bg(self):
@@ -54,10 +57,6 @@ class DjinnGame(object):
     def draw_sprites(self):
         self._groups['_active'].draw()
 
-    def register_group(self, group_name):
-        if group_name not in self._groups:
-            self._groups[group_name] = DjinnGroup()
-
     def flush_sprites(self, sprites, group_name='_active'):
         self._groups[group_name].flush(sprites)
 
@@ -65,16 +64,14 @@ class DjinnGame(object):
         if sprite not in self._groups['_active']:
             self._groups['_active'].add(sprite)
 
-    def assign_sprite(self, sprite, group_name=None, sprite_name=None):
-        if group_name is not None:
-            groups = self._groups.setdefault(group_name, DjinnGroup())
-            if sprite_name is None:
-                groups.add(sprite)
-            else:
-                groups.add_named(sprite, sprite_name)
+    def assign_sprite(self, sprite, group_name, tag=''):
+        if tag:
+            self._groups[group_name].add_tagged(sprite, tag)
+        else:
+            self._groups[group_name].add(sprite)
 
-    def get_sprite(self, group_name, sprite_name):
-        return self._groups[group_name].get_named(sprite_name)
+    def get_sprite(self, group_name, tag):
+        return self._groups[group_name].get_tagged(tag)
 
     # IO
     def register_keys(self):
