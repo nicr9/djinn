@@ -17,21 +17,18 @@ def div_lists(a, b):
     assert len(a) == len(b)
     return [(x / y) for x, y in zip(a, b)]
 
-# Utility classes
-class Colours(object):
-    white = [255, 255, 255]
-    black = [0, 0, 0]
-    red = [255, 0, 0]
-    green = [0, 255, 0]
-    blue = [0, 0, 255]
+COLOURS = {
+        'red': [255, 0, 0],
+        'green': [0, 255, 0],
+        'blue': [0, 0, 255],
+        'black': [0, 0, 0],
+        'white': [255, 255, 255],
+        'random': [randrange(255), randrange(255), randrange(255)],
+        'randomgrey': [randrange(255)] * 3,
+        }
 
-    @staticmethod
-    def rand():
-        return [randrange(255), randrange(255), randrange(255)]
-
-    @staticmethod
-    def randgrey():
-        return [randrange(255)] * 3
+def get_colour(name):
+    return COLOURS[name]
 
 pi = 3.14159
 X, Y = 0, 1
