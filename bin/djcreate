@@ -5,15 +5,54 @@ import sys
 
 PROMPT = '>>> '
 EXIT_CMDS = ['quit', 'exit', '\q']
-DRAWABLE_CMD = 'drawable'
+DRAWABLE_CMD = 'draw'
+DRAW_CMDS = [
+        'ellipse',
+        ]
 BITMAP_CMD = 'bitmap'
 USAGE = """Usage:\n\t$ %s <FILENAME>""" % __file__
+
+DEFAULTS = {
+        'ellipse': [
+            'white',
+            [0, 0],
+            [0, 0],
+            ],
+        'text': [
+            'The cake is a lie.',
+            'white',
+            [0, 0],
+            ],
+        }
 
 if len(sys.argv) < 2:
     print USAGE
     sys.exit()
 
+def process_drawable_args(tokens):
+    results = [tokens[0]]
+    assert tokens[0] in DRAW_CMDS
+    for i, arg in enumerate(tokens[1:]):
+        if arg == '_':
+            results.append(DEFAULTS[tokens[0]][i])
+        else:
+            results.append(arg)
+
+    return results
+
+def get_meta():
+    return {
+            'size': [32, 32],
+            'velocity': [0, 0],
+            'speed': [0, 0],
+            'grid': [1, 1],
+            'delta': [0, 0],
+            'frame': 'main',
+            'animated': False,
+            }
+
 with ConfigFile(sys.argv[1], create=True) as config:
+    config.update(get_meta())
     while True:
         raw = raw_input(PROMPT)
         tokens = raw.split()
@@ -21,8 +60,15 @@ with ConfigFile(sys.argv[1], create=True) as config:
             break
         elif tokens[0] == DRAWABLE_CMD:
             res_label = ' '.join(tokens[:2])
-            res_attrs = tokens[2:]
-            config.update({res_label: res_attrs})
+            res_instructions = []
+            while True:
+                instruction = raw_input('  ' + PROMPT)
+                if not instruction:
+                    break
+                else:
+                    args = instruction.split()
+                    res_instructions.append(process_drawable_args(args))
+            config.update({res_label: res_instructions})
         elif tokens[0] == BITMAP_CMD:
             res_label = ' '.join(tokens[:2])
             res_attrs = tokens[2:]
