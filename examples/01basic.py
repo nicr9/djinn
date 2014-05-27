@@ -1,8 +1,5 @@
-from djinn.sprite import DjinnSprite, DjinnGroup
+from djinn.sprite import DjinnSprite
 from djinn.game import DjinnGame
-from djinn.utils import Colours
-from djinn.io import DjinnKeyboard
-from djinn.animation import DjinnAnimation
 import pygame
 
 class BeachBall(DjinnSprite):
