@@ -99,11 +99,15 @@ class DjinnSprite(pygame.sprite.Sprite):
 
     def next_frame(self):
         frame = self.config.frame
+
+        # Set frame for next time
         if self.config.animated:
             new_frame = frame.split('.')
             new_frame[1] = int(new_frame[1]) + 1
             self.config.frame = '.'.join(new_frame)
-        self.res_store[self.res_name][frame]
+            # TODO: This needs modulo logic to bring it back to frame 0
+
+        return self.res_store[self.res_name].get_res(frame)
 
     def flush_in(self, secs):
         self.flush_time = time.time() + secs
@@ -114,22 +118,23 @@ class BitmapSprite(DjinnSprite):
         self.screen.blit(image, self.rect)
 
 class DrawableSprite(DjinnSprite):
-
     def _draw(self):
-        draw = self.next_frame()
-        tool = instruction[0]
-        args = instruction[1:]
+        frame = self.next_frame()
 
-        if tool == 'ellipse':
-            self._draw_ellipse(*args)
-        elif tool == 'text':
-            self._draw_text(*args)
-        #if tool == 'rect':
-        #    self._draw_rect(*args)
-        #if tool == 'line':
-        #    self._draw_line(*args)
-        else:
-            raise Exception('Bad instruction: %s' (instruction, ))
+        for instruction in frame:
+            tool = instruction[0]
+            args = instruction[1:]
+
+            if tool == 'ellipse':
+                self._draw_ellipse(*args)
+            elif tool == 'text':
+                self._draw_text(*args)
+            #if tool == 'rect':
+            #    self._draw_rect(*args)
+            #if tool == 'line':
+            #    self._draw_line(*args)
+            else:
+                raise Exception('Bad instruction: %s' (instruction, ))
 
     def _draw_ellipse(self, colour, rect_offset, border):
         rect = add_lists(self.rect[:2], rect_offset[:2]) + rect_offset[2:]

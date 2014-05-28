@@ -34,7 +34,7 @@ class DrawableRes(object):
         return [max_x, max_y]
 
     def __iter__(self):
-        return self.instructions
+        return iter(self.instructions)
 
 class SpriteConf(LamentConfig):
     @regex_config('drawable', '.*', list)

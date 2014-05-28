@@ -1,11 +1,37 @@
 {
-    "drawable beachball": [
-        "circle", 
-        "5", 
-        "5", 
-        "5", 
-        "5", 
-        "5", 
-        "5"
+    "drawable main": [
+        [
+            "ellipse", 
+            "red", 
+            [
+                0, 
+                0, 
+                80, 
+                30
+            ], 
+            0
+        ]
+    ], 
+    "frame": "main", 
+    "grid": [
+        1, 
+        1
+    ], 
+    "delta": [
+        0, 
+        0
+    ], 
+    "velocity": [
+        0, 
+        0
+    ], 
+    "animated": false, 
+    "speed": [
+        0, 
+        0
+    ], 
+    "size": [
+        32, 
+        32
     ]
 }

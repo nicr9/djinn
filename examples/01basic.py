@@ -1,24 +1,23 @@
-from djinn.sprite import DjinnSprite
+from djinn.sprite import DrawableSprite
 from djinn.game import DjinnGame
 import pygame
 
-class BeachBall(DjinnSprite):
-    def __init__(self, res_store):
-        super(BeachBall, self).__init__(res_store, 'beachball')
-        self.set_frame('beachball')
+class BeachBall(DrawableSprite):
+    def __init__(self, res_store, coords):
+        super(BeachBall, self).__init__(res_store, 'beachball', coords)
 
     def draw(self):
-        pass
+        self._draw()
 
 class Playground(DjinnGame):
     def load_sprites(self):
-        bb = BeachBall(self.res_store)
+        bb = BeachBall(self.res_store, [500, 300])
         self.assign_sprite(bb, 'beachballs', 'main')
         self.show_sprite(bb)
 
 if __name__ == "__main__":
     game = Playground(
-            [100, 100],
+            [1080, 608],
             'Playground',
             'black',
             30,
